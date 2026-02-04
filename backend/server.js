@@ -10,34 +10,30 @@ dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 
+/* ===== CORS ===== */
+app.use(
+  cors({
+    origin: [
+      "http://127.0.0.1:3000",
+      "http://localhost:3000",
+      "https://chat-app-1-ioju.onrender.com",
+    ],
+    credentials: true,
+  })
+);
 
-const corsOptions = {
-  origin: [
-    "http://127.0.0.1:3000",
-    "http://localhost:3000",
-    "https://chat-app-1-ioju.onrender.com",
-  ],
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-};
-
-app.use(cors(corsOptions));
-
-
-app.options("*", cors(corsOptions));
-
+/* ===== MIDDLEWARE ===== */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
+/* ===== ROUTES ===== */
 app.use("/api/auth", authRoutes);
 
 app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
 });
 
-
+/* ===== START ===== */
 const startServer = async () => {
   try {
     await connectDB();
