@@ -10,7 +10,7 @@ dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 
-/* ========= CORS (FIXED) ========= */
+
 const corsOptions = {
   origin: [
     "http://127.0.0.1:3000",
@@ -24,21 +24,20 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// 🔥 IMPORTANT: handle preflight requests
+
 app.options("*", cors(corsOptions));
 
-/* ========= MIDDLEWARE ========= */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-/* ========= ROUTES ========= */
+
 app.use("/api/auth", authRoutes);
 
 app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
 });
 
-/* ========= START ========= */
+
 const startServer = async () => {
   try {
     await connectDB();
