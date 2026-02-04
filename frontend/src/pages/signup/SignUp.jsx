@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import GenderCheckbox from "./GenderCheckbox.jsx";
 import { useState } from "react";
-import useSignup from "../../hooks/useSignup.js";
+
+const BASE_URL = "https://mern-chatapplication-ek8h.onrender.com"; // Render backend URL
 
 const SignUp = () => {
   const [inputs, setInputs] = useState({
@@ -12,15 +13,39 @@ const SignUp = () => {
     gender: "",
   });
 
-  const { loading, signup } = useSignup();
+  const [loading, setLoading] = useState(false);
 
   const handleCheckboxChange = (gender) => {
     setInputs((prev) => ({ ...prev, gender }));
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    await signup(inputs);
+    e.preventDefault(); // Prevent page reload
+    setLoading(true);
+
+    try {
+      const res = await fetch(`${BASE_URL}/api/auth/signup`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(inputs),
+      });
+
+      const data = await res.json();
+      console.log(data);
+
+      if (res.ok) {
+        alert("Signup successful!");
+        // Optionally, redirect to login page
+        // window.location.href = "/login";
+      } else {
+        alert(data.message || "Signup failed");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Signup failed. Check console for details.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -46,9 +71,7 @@ const SignUp = () => {
           {/* Row 1 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block mb-1 text-sm text-gray-300">
-                Full Name
-              </label>
+              <label className="block mb-1 text-sm text-gray-300">Full Name</label>
               <input
                 type="text"
                 placeholder="John Doe"
@@ -67,9 +90,7 @@ const SignUp = () => {
             </div>
 
             <div>
-              <label className="block mb-1 text-sm text-gray-300">
-                Username
-              </label>
+              <label className="block mb-1 text-sm text-gray-300">Username</label>
               <input
                 type="text"
                 placeholder="johndoe"
@@ -91,9 +112,7 @@ const SignUp = () => {
           {/* Row 2 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block mb-1 text-sm text-gray-300">
-                Password
-              </label>
+              <label className="block mb-1 text-sm text-gray-300">Password</label>
               <input
                 type="password"
                 placeholder="Enter password"
@@ -112,9 +131,7 @@ const SignUp = () => {
             </div>
 
             <div>
-              <label className="block mb-1 text-sm text-gray-300">
-                Confirm Password
-              </label>
+              <label className="block mb-1 text-sm text-gray-300">Confirm Password</label>
               <input
                 type="password"
                 placeholder="Confirm password"
